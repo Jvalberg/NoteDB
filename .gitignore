@@ -1,4 +1,6 @@
 NoteScribbler/NoteScribbler
-NoteScribbler/.*
+NoteScribbler/*.pyc
 NoteScribbler/*.swp
 *.swp
+NoteSeer/NoteSeer
+NoteSeer/*.pyc
