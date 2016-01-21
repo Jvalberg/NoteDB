@@ -1,4 +1,4 @@
-NoteWriter/NoteWriter
-NoteWriter/.*
-NoteWriter/*.swp
+NoteScribbler/NoteScribbler
+NoteScribbler/.*
+NoteScribbler/*.swp
 *.swp
