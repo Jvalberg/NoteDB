@@ -1,0 +1,4 @@
+NoteWriter/NoteWriter
+NoteWriter/.*
+NoteWriter/*.swp
+*.swp
