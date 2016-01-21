@@ -1,4 +1,4 @@
-BINARY_LOCATION=/home/jocke/dev/NoteDB/NoteWriter
+BINARY_LOCATION=/home/jocke/dev/NoteDB/NoteScribbler
 
 # Generate the appropriate files and directories
 if [[ ! -d /tmp/NoteDB ]]; then
@@ -17,8 +17,8 @@ if [[ ! -d ~/.notedb/blobs ]]; then
 	mkdir ~/.notedb/blobs
 fi
 
-if [[ -f /bin/NoteWriter ]]; then
-	rm /bin/NoteWriter
+if [[ -L /bin/NoteScribbler ]]; then
+	rm /bin/NoteScribbler
 fi
 
-ln -s "$BINARY_LOCATION/NoteWriter" "/bin/NoteWriter"
+ln -s "$BINARY_LOCATION/NoteScribbler" "/bin/NoteScribbler"
