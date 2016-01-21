@@ -4,6 +4,8 @@
 #include <sys/wait.h>
 #include <fstream>
 
+#include <errno.h>
+#include <string.h>
 #include <unistd.h>
 
 std::string getUniqueFilename()
@@ -99,6 +101,7 @@ int main()
 			std::ofstream storedBlob(blobfile);
 			if(!storedBlob.is_open())
 			{
+				std::cerr << "Error: " << strerror(errno);
 				std::cerr << "Could not store the note. EVERYHING IS LOST." << std::endl;
 				return -1;
 			}
