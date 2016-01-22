@@ -1,8 +1,13 @@
 #include <iostream>
+#include <boost/asio.hpp>
 
 int main()
 {
-	std::cout << "NoteMastermind running..." << std::endl;
-	std::cout << "Done." << std::endl;
+	// TODO:
+	// Use socket and network later, there is a lot to learn about it.
+	// Only use files now instead!
+	// boost::asio::io_service io_service;	
+	// boost::asio::ip::tcp::socket socket(io_service);
 	return 0;
 }
+
