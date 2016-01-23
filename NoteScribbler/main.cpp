@@ -7,11 +7,13 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 // BOOST - required for file system handling
 #include <boost/filesystem.hpp>
 
-#include "config.h"
+#include "../config.h"
 std::string getUniqueFilename()
 {
 	std::string ret;
@@ -50,7 +52,9 @@ int main()
 {
 	Config config;	
 	// TODO: Allow relative paths.... Boost library 
-	if (!config.Read("/home/jocke/.notedb/scribbler/scribbler.conf") )
+	struct passwd *pwd = getpwuid(getuid());
+	std::string homepath = pwd->pw_dir;
+	if (!config.Read(homepath + "/.notedb/notedb.conf") )
 	{
 		std::cerr << "Could not find config at: ~/.notedb/scribbler/scribbler.conf" << std::endl;
 		return -1;
