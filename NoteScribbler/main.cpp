@@ -7,7 +7,13 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
+// BOOST - required for file system handling
+#include <boost/filesystem.hpp>
+
+#include "../config.h"
 std::string getUniqueFilename()
 {
 	std::string ret;
@@ -44,10 +50,29 @@ bool file_exists(const std::string& filename)
 
 int main()
 {
+	Config config;	
+	// TODO: Allow relative paths.... Boost library 
+	struct passwd *pwd = getpwuid(getuid());
+	std::string homepath = pwd->pw_dir;
+	if (!config.Read(homepath + "/.notedb/notedb.conf") )
+	{
+		std::cerr << "Could not find config at: ~/.notedb/scribbler/scribbler.conf" << std::endl;
+		return -1;
+	}
+
 	std::string program("vim");
+	if (config.paramExists("editor"))
+		program = config.getValue("editor");
+
 	std::string programPath = "/bin/" + program;
+
 	std::string file_location("/tmp/NoteDB/note-blob.dat");
+	if(config.paramExists("tmp_file_location"))
+		file_location = config.getValue("tmp_file_location");
+
 	std::string blobStorage("/home/jocke/.notedb/blobs");
+	if(config.paramExists("raw_data_location"))
+		blobStorage = config.getValue("raw_data_location");
 
 	/* RUN THE TEXT EDITOR AND WAIT FOR USER TO FINISH */
 	pid_t pid = fork();
@@ -60,15 +85,15 @@ int main()
 	{
 		/* CHILD PROCESS - THE TEXT EDITOR */
 		/* Clear contents of the note blob */
-		std::fstream f(file_location, std::ios::in);
-		if(f)
-		{
-			f.close();
-			f.open(file_location, std::ios::out | std::ios::trunc);
-		}
+		boost::filesystem::path dir(file_location);
+		if(!boost::filesystem::exists(dir.remove_filename()))
+			boost::filesystem::create_directories(dir);
 
+		std::fstream f(file_location, std::fstream::in | std::fstream::out | std::fstream::trunc);
+		f.close();
 		execl(programPath.c_str(), program.c_str(), file_location.c_str(), (char)0x0);
 		std::cerr << "execl() failed!";
+		std::cerr << strerror(errno) << std::endl;
 		exit(1);
 	}
 	else 
@@ -80,8 +105,14 @@ int main()
 			waitpid(pid, &status, 0);
 		}
 
+		std::cout << "Storing note." << std::endl;
 		/* User has finished editing, check if note should be saved. */
-		
+
+		// create the directory if it doesnt exist yet
+		boost::filesystem::path blob_path(blobStorage);
+		if (!boost::filesystem::exists(blob_path))
+			boost::filesystem::create_directories(blob_path);
+
 		std::ifstream note_blob;
 		note_blob.open(file_location);
 		if(!note_blob.is_open())

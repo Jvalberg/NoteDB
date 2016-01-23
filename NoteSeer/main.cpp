@@ -7,6 +7,11 @@
 #include <boost/filesystem/path.hpp>
 #include <string>
 #include "arguments.h" 
+#include "../config.h"
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 /*
  * USE NCURSES??? To create interactive GUI
@@ -19,8 +24,20 @@ int main(int argc, char *argv[])
 		args.PrintUsage();
 		return -1;
 	}
+
+	Config config;	
+	struct passwd *pwd = getpwuid(getuid());
+	std::string homepath = pwd->pw_dir;
+	if (!config.Read(homepath + "/.notedb/notedb.conf"))
+	{
+		std::cerr << "Could not find config." << std::endl;
+		return -1;
+	}
+
 	std::cout << " ==================== NoteSeer =================== " << std::endl;
-	std::string blobLocation("/home/jocke/.notedb/blobs");
+	std::string blobLocation(homepath + "/.notedb/blobs");
+	if (config.paramExists("raw_data_location"))
+		blobLocation = config.getValue("raw_data_location");
 
 	namespace fs = boost::filesystem;
 	fs::path blob_path { blobLocation };
