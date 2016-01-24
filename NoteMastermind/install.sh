@@ -1,2 +1,2 @@
-echo "Installing..."
-echo "Done."
+cp NoteMastermind /bin/NoteMastermind
+hash NoteMastermind

@@ -5,6 +5,14 @@
 #include <string>
 #include <iostream>
 
+namespace config 
+{
+	std::string getDefaultPath()
+	{
+		struct passwd *pwd = getpwuid(getuid());
+		return std::string(pwd->pw_dir) + "/.notedb/notedb.conf";
+	}
+}
 
 bool Config::Read(const std::string& path)
 {
