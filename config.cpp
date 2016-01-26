@@ -40,7 +40,6 @@ bool Config::read()
 		{
 			std::string param(line.cbegin(), it);
 			std::string value(++it, line.cend());
-			std::cout << "Found param: " << param << " Value: " << value << std::endl;
 			_parameters[param] = value;
 		}
 	}

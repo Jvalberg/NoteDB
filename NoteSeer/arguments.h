@@ -11,6 +11,8 @@ class Arguments
 		bool Parse();
 		void PrintUsage();
 
+		std::string getValue(std::string&&);
+
 	private:
 		std::map<std::string, std::string> _args;
 		char**	_argv;
