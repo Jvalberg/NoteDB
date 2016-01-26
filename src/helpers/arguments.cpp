@@ -8,9 +8,14 @@ Arguments::Arguments(int argc, char* argv[])
 {
 }
 
+int	Arguments::getArgCount(){
+	return _argc;
+}
 
 bool Arguments::Parse()
 {
+	if(_argc == 1)
+		return true;
 
 	std::string valid_arg("-t");
 	if (valid_arg.compare(_argv[1]) != 0)

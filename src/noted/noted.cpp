@@ -1,5 +1,5 @@
 #include <iostream>
-#include "config.h" 
+#include "../helpers/config.h" 
 
 int main()
 {
