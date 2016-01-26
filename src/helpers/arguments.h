@@ -12,6 +12,7 @@ class Arguments
 		void PrintUsage();
 
 		std::string getValue(std::string&&);
+		int			getArgCount();
 
 	private:
 		std::map<std::string, std::string> _args;

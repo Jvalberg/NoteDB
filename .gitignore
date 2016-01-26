@@ -1,10 +1,3 @@
-NoteScribbler/NoteScribbler
-NoteScribbler/*.pyc
-NoteScribbler/*.swp
 *.swp
-NoteSeer/NoteSeer
-NoteSeer/*.pyc
-NoteSeer/*.swp
-NoteMastermind/NoteMastermind
-NoteMastermind/*.pyc
-NoteMastermind/*.swp
+build/*
+*.pyc

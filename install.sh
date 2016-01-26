@@ -1,27 +1,14 @@
-echo "Installing NoteDB Software suite."
-
-echo "==== Installing NoteMastermind... ==== "
-cd NoteMastermind
-make
-cd ..
-echo "====           Done.              ===="
-
-
-echo "==== Installing NoteScribbler... ==== "
-cd NoteScribbler
-make
-cd ..
-echo "====           Done.              ===="
-
-echo "==== Installing NoteSeer... ==== "
-cd NoteSeer
-make
-cd ..
-echo "====           Done.              ===="
-
-echo "== Creating Config & Environment... == "
-
 USER=user
+
+echo "Installing NoteDB Software suite."
+sudo cp build/noted.out /bin/noted
+sudo cp build/notectl.out /bin/notectl
+hash noted
+hash notectl
+echo "Done."
+
+echo "Creating Config & Environment..."
+
 TMP_FILE_LOCATION=/tmp/NoteDB
 TMP_FILE_NAME="$TMP_FILE_LOCATION/note-blob-raw.dat"
 CONF_LOCATION=/home/jocke/.notedb
@@ -58,4 +45,5 @@ echo "editor vim" >> $CONF_FILE
 echo "" >> $CONF_FILE
 echo "mastermind_dir $MASTERMIND_DIR" >> $CONF_FILE
 
-echo "====           Done.              ===="
+echo "Done."
+
