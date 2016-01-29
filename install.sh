@@ -15,7 +15,8 @@ CONF_LOCATION=/home/jocke/.notedb
 CONF_FILE="$CONF_LOCATION/notedb.conf"
 LOG_LOCATION=/home/jocke/.notedb/log
 RAW_DATA_LOCATION="$CONF_LOCATION/blobs"
-MASTERMIND_DIR="$CONF_LOCATION/mastermind"
+DAEMON_DIR="$CONF_LOCATION/daemon"
+DAEMON_PORT=6490
 
 # Generate the appropriate files and directories
 # if [ ! -d $TMP_FILE_LOCATION ]; then
@@ -43,7 +44,8 @@ echo "tmp_file_location $TMP_FILE_NAME" >> $CONF_FILE
 echo "raw_data_location $RAW_DATA_LOCATION" >> $CONF_FILE
 echo "editor vim" >> $CONF_FILE
 echo "" >> $CONF_FILE
-echo "mastermind_dir $MASTERMIND_DIR" >> $CONF_FILE
+echo "daemon_dir $DAEMON_DIR" >> $CONF_FILE
+echo "daemon_port $DAEMON_PORT" >> $CONF_FILE
 
 echo "Done."
 
