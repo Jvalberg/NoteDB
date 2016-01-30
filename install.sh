@@ -1,6 +1,7 @@
 USER=user
 
 echo "Installing NoteDB Software suite."
+sudo killall noted
 sudo cp build/noted.out /bin/noted
 sudo cp build/notectl.out /bin/notectl
 hash noted

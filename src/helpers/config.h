@@ -18,8 +18,10 @@ class Config {
 		bool Read(const std::string&);
 		bool Read(std::string&&);
 
-		std::string getValue(std::string&&);
-		bool paramExists(std::string&&);
+		const std::string& getValue(const std::string&) const;
+		bool paramExists(std::string&&) const;
+
+		std::string selfCheck();
 	private:
 		bool read();
 		std::map<std::string, std::string> _parameters;

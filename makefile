@@ -1,7 +1,7 @@
 CC=g++
 LD=g++
 
-CFLAGS=-std=c++11 -g
+CFLAGS=-std=c++11 -g -DBOOST_ALL_DYN_LINK
 LFLAGS=-Wall -std=c++11  
 
 MODULES=noted notectl helpers net test
@@ -14,8 +14,9 @@ SRC_DIR=$(addprefix src/,$(MODULES))
 # SRC=$(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
 # OBJ=$(patsubst src/%.cpp, build/%.o, $(SRC))
 
+STATIC_INCLUDES=-Ilibs 
 INTERNAL_INCLUDES=$(addprefix -I,$(SRC_DIR))
-SHARED_LIBRARIES=-lboost_system -lboost_filesystem
+SHARED_LIBRARIES=-lboost_system -lboost_filesystem -lboost_log -lpthread
 
 DAEMON_DIRS=$(addprefix src/,$(MODULES_DAEMON))
 DAEMON_SRC=$(foreach bdir,$(DAEMON_DIRS),$(wildcard $(bdir)/*.cpp))
@@ -33,7 +34,7 @@ vpath %.cpp $(SRC_DIR)
 
 define make-goal
 $(1)/%.o: %.cpp
-	$(CC) $(CFLAGS) $(INTERNAL_INCLUDES) -c $$< -o $$@
+	$(CC) $(CFLAGS) $(STATIC_INCLUDES) $(INTERNAL_INCLUDES) -c $$< -o $$@
 	@echo $(1)
 endef
 
