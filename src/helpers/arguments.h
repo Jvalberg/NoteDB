@@ -9,10 +9,8 @@ class Arguments
 		Arguments(int argc, char* argv[]);
 
 		bool Parse();
-		void PrintUsage();
-
-		std::string getValue(std::string&&);
-		int			getArgCount();
+		
+		std::map<std::string, std::string>& getArgs();
 
 	private:
 		std::map<std::string, std::string> _args;

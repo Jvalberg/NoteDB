@@ -45,14 +45,30 @@ bool Config::read()
 	}
 	return true;
 }
-std::string Config::getValue(std::string&& param)
+const std::string& Config::getValue(const std::string& param) const
 {
-	return _parameters[param];
+	return this->_parameters.at(param);
 }
 
-bool Config::paramExists(std::string&& param)
+bool Config::paramExists(std::string&& param) const
 {
-	std::map<std::string, std::string>::iterator it = _parameters.find(param);
-	return it != _parameters.end();
+	std::map<std::string, std::string>::const_iterator it = this->_parameters.find(param);
+	return it != this->_parameters.cend();
 }
 
+std::string Config::selfCheck() {
+	std::string error(""); 	
+
+	if(!this->paramExists("editor"))
+		error += "'editor' variable not found.\n";		
+	if(!this->paramExists("tmp_file_location"))
+		error += "'tmp_file_location' variable not found.\n";		
+	if(!this->paramExists("raw_data_location"))
+		error += "'raw_data_location' variable not found.\n";		
+	if(!this->paramExists("daemon_port"))
+		error += "'daemon_port' variable not found.\n";		
+	if(!this->paramExists("daemon_dir"))
+		error += "'daemon_dir' variable not found.\n";		
+	
+	return error;
+} 

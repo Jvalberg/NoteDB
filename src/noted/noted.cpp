@@ -1,32 +1,62 @@
 #include <iostream>
 #include "../helpers/config.h" 
 
+// Socket libraries
+#include "../net/listener.h"
+#include "../net/socket.h"
+#include "clientmanager.h"
+
+#include "../helpers/logger.h"
+
 int main()
 {
-	std::cout << "NoteMastermind starting..." << std::endl;
-	// TODO:
-	// Use socket and network later, there is a lot to learn about it.
-	// Only use files now instead!
-	// boost::asio::io_service io_service;	
-	// boost::asio::ip::tcp::socket socket(io_service);
-	
+	logger::setConsoleOutput();
+	logger::LOG(logger::INFO) << "Starting daemon." << std::endl;
+
 	Config config;
 	if (!config.Read(config::getDefaultPath())) 
 	{
-		std::cerr << "Could not locate config file at: " << config::getDefaultPath() << std::endl;
+		logger::LOG(logger::FATAL) << "Could not locate config file at: " << config::getDefaultPath() << std::endl;
 		return -1;
 	}
-
-	if(!config.paramExists("mastermind_dir")) 
+	std::string error = config.selfCheck();
+	if(error != "")
 	{
-		std::cerr << "No mastermind_dir variable found in config.\nAborting..." << std::endl;
+		logger::LOG(logger::FATAL) <<  error << std::endl;
 		return -1;
-	}
-	std::string workingDirectory(config.getValue("mastermind_dir"));
-	
-	
+	} 
 
+	std::string logpath = config.getValue("log") + "/noted.log";
+	if(!logger::setFileOutput(logpath))
+		logger::LOG(logger::ERROR) << "Failed to use logfile: " << logpath << std::endl;
+
+	logger::clearLines(2);
+
+	std::string blobStorage(config.getValue("raw_data_location"));	 
+	std::string workingDirectory(config.getValue("daemon_dir"));
+	std::string port(config.getValue("daemon_port"));
 	
-	std::cout << "NoteMastermind stopping..." << std::endl;
+	Listener listener(port);
+	
+	logger::LOG(logger::TRACE) << "Starting listener." << std::endl;
+	if(listener.start()){
+		 
+		logger::LOG(logger::TRACE) << "Listener started." << std::endl;
+		 
+		while(listener.isRunning()) {
+			logger::LOG(logger::TRACE) << "Waiting for client connection..." << std::endl;
+			Socket* client = listener.acceptClient();
+			logger::LOG(logger::TRACE) << "Accepted client." << std::endl;
+			if(client != nullptr){
+				logger::LOG(logger::TRACE) << "Handling client..." << std::endl;
+				handleClient(config, client);
+				delete client;
+			}
+		}
+	} else {
+		logger::LOG(logger::FATAL) << "Failed to start listener." << listener.getFault() << std::endl;
+	}
+
+	logger::LOG(logger::TRACE) << "Stopping daemon." << std::endl;
 	return 0;
 }
