@@ -3,13 +3,10 @@
 #include <vector>
 #include <sstream>
 
-void readContent(std::ifstream& file, std::vector<std::string>& content){
-	content.clear();
-	std::string line;
-	while(getline(file, line)){
-		content.push_back(line);
-	}
-}
+#include <memory>
+#include "FileDAL.h"
+#include "sqlDAL.h"
+#include "../helpers/logger.h"
 
 std::vector<std::string> parseTags(const std::string& tagStr){
 	std::vector<std::string> ret;
@@ -49,15 +46,12 @@ std::vector<std::string> getTags(const std::string& line){
 	return ret;
 }
 
-bool containsTags(const std::vector<std::string>& tags, const std::vector<std::string> content){
-	for (std::vector<std::string>::const_iterator it = content.begin();  
-			it < content.end(); ++it) {
-		std::vector<std::string> contentTags = getTags(*it);	
-		for(auto it = tags.begin(); it != tags.end(); ++it){ 
-			for(auto xt = contentTags.begin(); xt != contentTags.end(); ++xt){ 
-				if(xt->compare(*it) == 0){
-					return true;
-				}
+bool containsTags(const std::vector<std::string>& tags, const std::string& content){
+	std::vector<std::string> contentTags = getTags(content);	
+	for(auto it = tags.begin(); it != tags.end(); ++it){ 
+		for(auto xt = contentTags.begin(); xt != contentTags.end(); ++xt){ 
+			if(xt->compare(*it) == 0){
+				return true;
 			}
 		}
 	}
@@ -65,38 +59,26 @@ bool containsTags(const std::vector<std::string>& tags, const std::vector<std::s
 }
 
 std::string searchTags(const std::string& tagsStr, const std::string& blobLocation) {
+	std::unique_ptr<DAL> dal( new SQLDAL() );
+	dal->initialize("127.0.0.1/notedb|root|cepett");
+	if(!dal->isInitialized()) {
+		logger::LOG(logger::ERROR) << "SearchTags: Failed to initialize DAL." << std::endl;	
+		return "";
+	}
 
 	std::stringstream out;
-
-	namespace fs = boost::filesystem;
-	fs::path blob_path { blobLocation };
+	std::vector<Note> notes = dal->getAllNotes();
 	std::vector<std::string> tags = parseTags(tagsStr);
-	if(fs::exists(blob_path))
-	{
-		fs::directory_iterator end_iter;
-		for( fs::directory_iterator dir_iter(blob_path); dir_iter != end_iter; ++dir_iter)
-		{
-			if(fs::is_regular_file(dir_iter->status()))
-			{
-				std::string path = dir_iter->path().c_str();
-				std::ifstream blobfile(path);
-				if ( blobfile.is_open())
-				{
-					std::vector<std::string> blobContent;
-					readContent(blobfile, blobContent);
-					if (containsTags(tags, blobContent) || tagsStr == "*"){
-						out << std::endl;
-						out << dir_iter->path().filename() << std::endl;
-					 	for(auto it = blobContent.begin(); it != blobContent.end(); ++it)
-							out << *it << std::endl;
-						out << std::endl;
-					}
-				}
-				else 
-					out << "Error: " << strerror(errno) << std::endl;
-			}
-
+	logger::LOG(logger::TRACE) << "Search for tags '" << tagsStr << "' in " << notes.size() << " notes" << std::endl;
+	for(std::vector<Note>::iterator it = notes.begin(); 
+			it != notes.end(); ++it) {
+		if(containsTags(tags, it->getContent())) {
+			out << std::endl;
+			out << it->getTimestamp() << std::endl;
+			out << it->getContent() << std::endl;
+			out << std::endl;
 		}
 	}
+
 	return out.str();
 } 

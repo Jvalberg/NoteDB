@@ -1,0 +1,21 @@
+
+INSERT INTO notes (Content, Timestamp) VALUES ("Testing new clientmanager #dev", timestamp'30/1/16-9:39:6');
+INSERT INTO notes (Content, Timestamp) VALUES ("hello#tele", timestamp'29/1/16-23:29:7');
+INSERT INTO notes (Content, Timestamp) VALUES ("I am getting a bit tired.#ozstuff #tired", timestamp'29/1/16-23:27:28');
+INSERT INTO notes (Content, Timestamp) VALUES ("Testnote  #yolo", timestamp'30/1/16-9:5:34');
+INSERT INTO notes (Content, Timestamp) VALUES ("This is a test note.#vim #cool", timestamp'29/1/16-23:24:4');
+INSERT INTO notes (Content, Timestamp) VALUES ("VIm is a pretty cool thing\n#vim #prog #cool", timestamp'24/1/16-17:17:10');
+INSERT INTO notes (Content, Timestamp) VALUES ("Final testnote before refactoring entire project.\n#final", timestamp'26/1/16-10:45:6');
+INSERT INTO notes (Content, Timestamp) VALUES ("This is a good note.", timestamp'23/1/16-9:57:57');
+INSERT INTO notes (Content, Timestamp) VALUES ("A note about nmap, i want to learn this better. #nmap", timestamp'24/1/16-17:18:31');
+INSERT INTO notes (Content, Timestamp) VALUES ("inotify-tools is a library which allows for software to monitor for file changes, and directory \nchanges. \n\n#sysdev #notedb", timestamp'25/1/16-22:38:45');
+INSERT INTO notes (Content, Timestamp) VALUES ("Another development testnote #dev", timestamp'30/1/16-16:54:52');
+INSERT INTO notes (Content, Timestamp) VALUES ("Maybe its also time to start looking at haskell. #prog", timestamp'24/1/16-17:21:54');
+INSERT INTO notes (Content, Timestamp) VALUES ("this is temponote #yolo", timestamp'26/1/16-18:52:27');
+INSERT INTO notes (Content, Timestamp) VALUES ("Hall[!!!! hej", timestamp'22/1/16-22:48:41');
+INSERT INTO notes (Content, Timestamp) VALUES ("testing#asd#qwe", timestamp'29/1/16-23:29:35');
+INSERT INTO notes (Content, Timestamp) VALUES ("Last note before my commit.", timestamp'23/1/16-10:4:49');
+INSERT INTO notes (Content, Timestamp) VALUES ("Hello world #programming", timestamp'30/1/16-9:19:8');
+INSERT INTO notes (Content, Timestamp) VALUES ("Expand logger to be async, using a ringbuffer and threads. #notedb", timestamp'31/1/16-10:32:21');
+INSERT INTO notes (Content, Timestamp) VALUES ("hello oh almighty world", timestamp'29/1/16-23:1:23');
+INSERT INTO notes (Content, Timestamp) VALUES ("git add -p \nchoose which hunks of data from a file to stage\n#git", timestamp'25/1/16-19:25:41');

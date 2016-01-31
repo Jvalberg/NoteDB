@@ -2,13 +2,16 @@ USER=user
 
 echo "Installing NoteDB Software suite."
 sudo killall noted
-sudo cp build/noted.out /bin/noted
-sudo cp build/notectl.out /bin/notectl
+sudo cp ../build/noted.out /bin/noted
+sudo cp ../build/notectl.out /bin/notectl
 hash noted
 hash notectl
 echo "Done."
 
-echo "Creating Config & Environment..."
+echo "Creating databases"
+sh createdb.sh
+
+echo "Creating Config"
 
 TMP_FILE_LOCATION=/tmp/NoteDB
 TMP_FILE_NAME="$TMP_FILE_LOCATION/note-blob-raw.dat"
@@ -47,6 +50,8 @@ echo "editor vim" >> $CONF_FILE
 echo "" >> $CONF_FILE
 echo "daemon_dir $DAEMON_DIR" >> $CONF_FILE
 echo "daemon_port $DAEMON_PORT" >> $CONF_FILE
+
+sudo -u $USER cp db.conf $CONF_LOCATION/
 
 echo "Done."
 

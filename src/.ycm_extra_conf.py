@@ -15,7 +15,7 @@ flags = [
 '-I',
 '.',
 '-I',
-'../libs',
+'../libs/include',
 '-I',
 '/usr/include/c++/5.3.0',
 '-I',

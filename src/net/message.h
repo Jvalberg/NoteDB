@@ -62,10 +62,10 @@ namespace notedb{
 		};
 
 		bool send_request(const RequestMessage& message, Socket& socket);
-		RequestMessage recv_request(Socket& socket);
+		RequestMessage* recv_request(Socket& socket);
 
 		bool send_response(const ResponseMessage& message, Socket& socket);
-		ResponseMessage recv_response(Socket& socket);
+		ResponseMessage* recv_response(Socket& socket);
 	}
 }
 

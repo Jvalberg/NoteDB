@@ -4,7 +4,7 @@ LD=g++
 CFLAGS=-std=c++11 -g -DBOOST_ALL_DYN_LINK
 LFLAGS=-Wall -std=c++11  
 
-MODULES=noted notectl helpers net test
+MODULES=noted notectl helpers net test 
 MODULES_DAEMON=noted helpers net
 MODULES_CTL=notectl helpers net
 MODULES_TEST=test net
@@ -14,9 +14,9 @@ SRC_DIR=$(addprefix src/,$(MODULES))
 # SRC=$(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
 # OBJ=$(patsubst src/%.cpp, build/%.o, $(SRC))
 
-STATIC_INCLUDES=-Ilibs 
+STATIC_INCLUDES=
 INTERNAL_INCLUDES=$(addprefix -I,$(SRC_DIR))
-SHARED_LIBRARIES=-lboost_system -lboost_filesystem -lboost_log -lpthread
+SHARED_LIBRARIES=-lboost_system -lboost_filesystem -lboost_log -lpthread -lmysqlcppconn
 
 DAEMON_DIRS=$(addprefix src/,$(MODULES_DAEMON))
 DAEMON_SRC=$(foreach bdir,$(DAEMON_DIRS),$(wildcard $(bdir)/*.cpp))
@@ -42,11 +42,11 @@ endef
 
 all: checkdirs daemon ctl test install rundaemon
 
-rundaemon: rundaemon.sh
-	sh rundaemon.sh
+rundaemon: scripts/rundaemon.sh
+	cd scripts && sh rundaemon.sh && cd ..
 
-install: install.sh
-	sh install.sh
+install: scripts/install.sh
+	cd scripts && sh install.sh && cd ..
 
 daemon: build/noted.out
 

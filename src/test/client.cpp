@@ -1,36 +1,41 @@
 #include <iostream>
 #include <string.h>
+#include <exception>
 
-#include "../net/socket.h"
-
-#include "../net/message.h"
+#include <cppconn/connection.h>
+#include <cppconn/driver.h>
+#include <cppconn/statement.h>
+#include <cppconn/resultset.h>
 
 int main(){
 
-	std::cout << "Running client!" << std::endl;
-	using namespace notedb::net; 
+	std::cout << "Running testclient." << std::endl;
+	
+	using namespace sql;
+	Driver* driver;
+	Connection* con;
 
-	Socket socket;
+	try {
 
-	if(socket.connectTo("127.0.0.1", "6490")){
-		std::cout << "Connected to host." << std::endl;
+		driver = get_driver_instance();
+		con = driver->connect("tcp://127.0.0.1:3306/notedb", "root", "cepett");
+		Statement* stmt = con->createStatement();
+		ResultSet* result;
 
-		Parameter param("jocke", "mitt value");
-		std::vector<Parameter> parameters;
-		parameters.push_back(param);
-		RequestMessage message(parameters);
-		message.getParams().at(0).print();
+		bool success = stmt->execute("SELECT * FROM notes");
+		if(success) {
+			result = stmt->getResultSet();
+			std::cout << "Printing results. " << std::endl;
+			while(result->next()) {
+				std::cout << result->getString("content"); 
+			}
+		} else {
+			std::cout << "Could not execute statement." << std::endl;
+		}
+		con->close();
 
-		send_request(message, socket);
-		ResponseMessage response(recv_response(socket));
-
-		if(response.getCode() == notedb::net::F_RESP_SUCCESS)
-			std::cout << "SUCCESS: " << response.getData() << std::endl;
-
-		socket.disconnect();
-	} else {
-		std::cout << "Failed to connect to server: " << socket.getError() << std::endl;
+	} catch(std::exception e) {
+		std::cout << e.what() << std::endl;
 	}
-
 	return 0;
 }

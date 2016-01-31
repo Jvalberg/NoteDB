@@ -54,6 +54,7 @@ int main(int argc, char *argv[]){
 			{
 				std::cout << "No note detected. Aborting." << std::endl;
 				logger::LOG(logger::INFO) << "No note detected. Aborting" << std::endl;
+				socket.disconnect();
 				return 1;
 			}
 			args.getArgs()["-a"] = note;
@@ -67,13 +68,18 @@ int main(int argc, char *argv[]){
 		RequestMessage message(params);
 		send_request(message, socket);
 
-		ResponseMessage response(recv_response(socket));
-		if(response.getCode() == F_RESP_SUCCESS) {
-			std::cout << response.getData() << std::endl;
+		std::unique_ptr<ResponseMessage> response(recv_response(socket));
+		if(response == nullptr) {
+			std::cerr << "Error: Lost socket connection to other end." << std::endl;
+			logger::LOG(logger::ERROR) << "Socket closed on the other end. Aborting." << std::endl;
+			return -1;
+		}
+		if(response->getCode() == F_RESP_SUCCESS) {
+			std::cout << response->getData() << std::endl;
 		} 
-		else if(response.getCode() == F_RESP_FAILED) {
-			std::cerr << "Error: " << response.getData() << std::endl;
-			logger::LOG(logger::ERROR) << "Error response: " << response.getData() << std::endl;
+		else if(response->getCode() == F_RESP_FAILED) {
+			std::cerr << "Error: " << response->getData() << std::endl;
+			logger::LOG(logger::ERROR) << "Error response: " << response->getData() << std::endl;
 		}
 
 		socket.disconnect();

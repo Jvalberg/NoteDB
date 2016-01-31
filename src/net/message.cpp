@@ -92,9 +92,12 @@ bool notedb::net::send_request(const RequestMessage& message, Socket& socket){
 }
 
 
-RequestMessage notedb::net::recv_request(Socket& socket){
+RequestMessage* notedb::net::recv_request(Socket& socket){
 	int count = 0;
-	socket.recvData(&count, sizeof(int));
+	int recvd = socket.recvData(&count, sizeof(int));
+
+	if(recvd == 0)
+		return nullptr;
 
 	std::vector<Parameter> params;
 	for(long i = 0; i < count; ++i){
@@ -121,7 +124,7 @@ RequestMessage notedb::net::recv_request(Socket& socket){
 		params.push_back(Parameter(flag, value));
 	}
 
-	return RequestMessage(params);
+	return new RequestMessage(params);
 }
 
 
@@ -139,15 +142,19 @@ bool notedb::net::send_response(const ResponseMessage& message, Socket& socket){
 	return true;
 }
 
-ResponseMessage notedb::net::recv_response(Socket& socket){
+ResponseMessage* notedb::net::recv_response(Socket& socket){
 	byte code;
 	size_t size;
-	socket.recvData(&code, sizeof(byte));
+	int recvd = socket.recvData(&code, sizeof(byte));
+
+	if(recvd == 0)
+		return nullptr;
+
 	socket.recvData(&size, sizeof(size_t));
 	char* buff = new char[size];
 	socket.recvData(buff, size);
 	buff[size-1] = '\0';
 	std::string value(buff);
 	delete[] buff;
-	return ResponseMessage(code, value);
+	return new ResponseMessage(code, value);
 }
